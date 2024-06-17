@@ -1,0 +1,6 @@
+.Header-Message{
+          height: 100%;
+          display: flex;
+          /* flex-wrap: wrap; */
+          gap: 1px;
+}

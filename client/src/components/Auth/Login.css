@@ -1,0 +1,30 @@
+.login-form {
+  width: 100%;
+}
+
+.login-form-container {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+}
+
+.Login-heading {
+          margin: 0.5rem 0;
+          font-size: 2.5rem;
+          line-height: 2rem;
+          font-weight: 500;
+}
+
+.inputs-tags {
+  display: flex;
+  flex-direction: column;
+}
+
+.Login {
+  color: #3B82F6;
+  cursor: pointer;
+}
+
+.Login:hover {
+  text-decoration: underline;
+}

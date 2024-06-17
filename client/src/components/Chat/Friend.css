@@ -1,0 +1,44 @@
+.Friend-input-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.input {
+
+  background-color: #ffffff;
+  border-radius: 4px;
+  padding: 6px;
+  box-shadow: 0 4px 4px rgb(0, 0, 0);
+}
+.add-a-friend {
+  height: 60px;
+  width: 60px;
+  border-radius: 4px;
+  background-color: #00a3ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+/* Friend.css */
+
+.friends {
+  display: flex;
+  align-items: center;
+  gap: 12px; 
+  padding: 8px;
+  margin-bottom: 10px; 
+}
+
+
+.friends > div {
+  display: flex;
+  flex-direction: column;
+}
+
+.friends > div > p {
+  margin: 0;
+  padding: 0;
+}

@@ -1,0 +1,30 @@
+.form {
+  width: 100%;
+}
+.form-container {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+}
+
+.signup-heading {
+          margin: 0.5rem 0;
+          font-size: 1.5rem;
+          line-height: 2rem;
+          font-weight: 500;
+}
+.Details-heading{
+          margin-top: 0.75rem;
+          margin-bottom: 1.5rem;
+}
+.inputs-tags {
+  display: flex;
+  flex-direction: column;
+}
+
+.Login{
+          color: #3B82F6; 
+}
+.Login:hover{
+          cursor: pointer;
+}

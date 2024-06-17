@@ -1,0 +1,42 @@
+.chat-with-friend {
+  width: calc(100% - 300px);
+  background-color: #1c1c1c;
+}
+.chat-header::after {
+  content: "";
+  display: block;
+  /* / width: 4px; */
+  height: 0.75px;
+  background-color: white;
+}
+.onlineStatus,
+.offlineStatus {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.onlineStatus::before {
+  content: "";
+  display: block;
+  height: 6px;
+  width: 6px;
+  background-color: green;
+  border-radius: 10px;
+}
+.offlineStatus::before {
+  content: "";
+  display: block;
+  height: 6px;
+  width: 6px;
+  background-color: red;
+  border-radius: 10px;
+}
+.friend-info {
+  flex-grow: 1;
+  margin-left: 1rem;
+}
+
+.chat-actions {
+  display: flex;
+  gap: 1rem;
+}

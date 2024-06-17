@@ -1,0 +1,16 @@
+
+.container {
+  width: 100%;
+  height: 93vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* font-size: 4.5rem; 7xl size equivalent */
+}
+
+/* Link styling */
+.login-link {
+  font-size: 4.5rem; /* 7xl size equivalent */
+  text-decoration: none;
+  color: inherit;
+}
