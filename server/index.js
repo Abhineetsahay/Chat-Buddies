@@ -18,10 +18,12 @@ app.use(express.json());
 const auth = require("./routes/Auth");
 const search = require("./routes/Search");
 const chatRetriving = require("./routes/RetriveChat");
+const DeletChat=require("./routes/DeleteChat");
 
 app.use("/auth", auth);
 app.use("/searchFriend", search);
 app.use("/chatHistory", chatRetriving);
+app.use("/DeleteChat",DeletChat)
 
 app.get("/", (req, res) => {
   res.send("<p>Hello, this is your Express server!</p>");
@@ -36,7 +38,7 @@ const io = new Server(server, {
 });
 
 io.on("connection", (socket) => {
-  console.log("A user connected: " + socket.id);
+  // console.log("A user connected: " + socket.id);
 
   socket.on("message", async (data) => {
     console.log("Message received: ", data);

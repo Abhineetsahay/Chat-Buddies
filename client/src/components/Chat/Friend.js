@@ -5,12 +5,18 @@ import friend from "../../assets/addFriend.png";
 import Pop from "./popup/Pop";
 import { useDispatch } from "react-redux";
 import { get } from "../../redux/Slices/ActivateFriend";
+import { io } from "socket.io-client";
+import { Delete } from "@mui/icons-material";
+
+const socket=io("http://localhost:4000")
 
 const Friend = () => {
   const dispatch = useDispatch();
   const [addFriend, setAddFriend] = useState(false);
   const [friendDetails, setFriendDetails] = useState([]);
   const [search, setSearch] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
+  let typingTimeout;
 
   useEffect(() => {
     const savedFriendDetails = localStorage.getItem("friendDetails");
@@ -19,12 +25,35 @@ const Friend = () => {
     }
   }, []);
 
+  useEffect(()=>{
+    const Reciver=localStorage.getItem("reciver");
+    const Sender=localStorage.getItem("sender")
+    if (!Reciver&&Sender) {
+      console.log("Reciver not set");
+    }
+    socket.on("typing",(data)=>{
+      // console.log(data);
+      if (data.sender === Reciver) {
+        console.log("ghbjnk");
+        setIsTyping(true);
+        clearTimeout(typingTimeout);
+        typingTimeout = setTimeout(() => {
+          setIsTyping(false);
+        }, 1000);
+      }
+    })       
+       return () => {
+        socket.off("typing");
+      };
+  },[])
+
+
   const togglePopup = () => {
     setAddFriend(!addFriend);
   };
   const selectFriend=()=>{
     dispatch(get(friend));
-    
+    window.location.reload();
   }
   const handleFriendDetails = (details) => {
     setFriendDetails(details);
@@ -66,7 +95,7 @@ const Friend = () => {
               <Avatar src={friend.image} />
               <div>
                 <Typography variant="body1" color={"white"}>{friend.name}</Typography>
-                <Typography variant="caption" color={"white"}>Typing...</Typography>
+                {isTyping&&(<Typography variant="caption" color={"white"}>Typing...</Typography>)}
               </div>
               {/* <Button
                 variant="contained"

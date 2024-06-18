@@ -89,6 +89,7 @@ const MessageHeader = () => {
               >
                 <MenuItem onClick={handleFriendDetails}>Friend ACCOUNT details</MenuItem>
                 <MenuItem onClick={handleDeleteAccount}>Delete account</MenuItem>
+                <MenuItem>Close chat</MenuItem>
               </Menu>
             </div>
           </Stack>

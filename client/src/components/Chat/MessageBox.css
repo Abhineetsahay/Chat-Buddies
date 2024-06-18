@@ -27,10 +27,22 @@
   display: flex;
   align-items: flex-start;
   margin-bottom: 1rem;
+  transition: all 3ms ease;
 }
+
 .user{
         display: flex;
+        align-items: center;
+        gap: 10px;
         flex-direction: row-reverse;
+}
+.friend{
+  display: flex;
+  align-items: center;
+  
+}
+.DeleteIcon{
+  color: #ffffff;
 }
 .message.received {
   justify-content: flex-start;
