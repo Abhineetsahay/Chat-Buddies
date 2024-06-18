@@ -102,10 +102,5 @@ Chat Buddies is a real-time web chat application that allows users to communicat
 
 Contributions are welcome! Please fork the repository and create a pull request with your improvements.
 
-## License
-
-This project is licensed under the MIT License. See the [LICENSE](./LICENSE) file for details.
-
----
 
 Feel free to customize this README file further based on your specific project details and additional features.
