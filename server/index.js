@@ -4,7 +4,7 @@ const cors = require("cors");
 const http = require("http");
 const mongoose = require("mongoose");
 const { Server } = require("socket.io");
-const Chat = require("./models/Chat");
+const Contact = require("./models/Contacts");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -17,13 +17,13 @@ app.use(express.json());
 
 const auth = require("./routes/Auth");
 const search = require("./routes/Search");
-const chatRetriving = require("./routes/RetriveChat");
-const DeletChat=require("./routes/DeleteChat");
+const chatRetrieving = require("./routes/RetriveChat");
+const deleteChat = require("./routes/Delete.Chat.Account");
 
 app.use("/auth", auth);
 app.use("/searchFriend", search);
-app.use("/chatHistory", chatRetriving);
-app.use("/DeleteChat",DeletChat)
+app.use("/chatHistory", chatRetrieving);
+app.use("/DeleteChatAccount", deleteChat);
 
 app.get("/", (req, res) => {
   res.send("<p>Hello, this is your Express server!</p>");
@@ -38,38 +38,43 @@ const io = new Server(server, {
 });
 
 io.on("connection", (socket) => {
-  // console.log("A user connected: " + socket.id);
-
   socket.on("message", async (data) => {
-    console.log("Message received: ", data);
     try {
-      const chat = new Chat({ 
+      const chat = {
         sender: data.sender,
         receiver: data.receiver,
         message: data.message,
-        timestamp: data.timestamp
-      });
-   
-      await chat.save();
-  
-      io.emit("message", data); 
+        timestamp: data.timestamp,
+      };
+
+      // Save the message in the Chat collection
+      // Update the chat array in the Contact document
+      await Contact.updateOne(
+        { name: data.sender, "contacts.name": data.receiver },
+        { $push: { "contacts.$.chats": chat } }
+      );
+
+      await Contact.updateOne(
+        { name: data.receiver, "contacts.name": data.sender },
+        { $push: { "contacts.$.chats": chat } }
+      );
+
+      io.emit("message", data);
     } catch (error) {
       console.log(error.message);
     }
   });
 
   socket.on("typing", (data) => {
-    console.log("Typing event received: ", data);
     socket.broadcast.emit("typing", data);
   });
 
   socket.on("status", (data) => {
-    // console.log("Status update received: ", data);
     io.emit("status", { id: socket.id, status: data });
   });
 
   socket.on("disconnect", () => {
-    console.log("A user disconnected: " + socket.id);
+    // console.log("A user disconnected: " + socket.id);
   });
 });
 

@@ -1,9 +1,8 @@
-// controllers/RetriveChat.js
-const Chat = require("../models/Chat");
+const Contact = require("../models/Contacts");
 
 exports.RetriveChat = async (req, res) => {
   try {
-    const { sender, receiver } = req.query||req.params||req.body;
+    const { sender, receiver } = req.query || req.params || req.body;
 
     if (!sender || !receiver) {
       return res.status(400).json({
@@ -12,14 +11,22 @@ exports.RetriveChat = async (req, res) => {
       });
     }
 
-    const chats = await Chat.find({
-      $or: [
-        { sender, receiver },
-        { sender: receiver, receiver: sender },
-      ],
-    }).sort({ timestamp: 1 });
+    const senderContact = await Contact.findOne({ name: sender, "contacts.name": receiver });
+    const receiverContact = await Contact.findOne({ name: receiver, "contacts.name": sender });
 
-    return res.json(chats);
+    if (!senderContact || !receiverContact) {
+      return res.status(404).json({
+        success: false,
+        message: "Contacts not found",
+      });
+    }
+
+    const senderChats = senderContact.contacts.find(contact => contact.name === receiver).chats;
+
+    // Combine and sort chats
+    const allChats = [...senderChats].sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+
+    return res.json(allChats);
   } catch (error) {
     console.log(error);
     return res.status(500).json({

@@ -4,6 +4,7 @@
   justify-content: center;
   flex-wrap: wrap;
   gap: 8px;
+  margin: 12px 0;
 }
 
 .input {
@@ -30,12 +31,19 @@
   gap: 12px; 
   padding: 8px;
   margin-bottom: 10px; 
+  transition: all 5ms ease-in;
+  background-color: #00A3FF;
+  border-radius: 10px;
 }
-
+.friends:hover{
+  background-color: #00A3FF;
+  border-radius: 10px;
+}
 
 .friends > div {
   display: flex;
   flex-direction: column;
+  text-align: start;
 }
 
 .friends > div > p {

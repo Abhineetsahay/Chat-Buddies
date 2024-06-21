@@ -1,16 +1,16 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 export const ReceiverSlice = createSlice({
-  name: "Receiver",
+  name: "LatestChat",
   initialState: {
-    Receiver: null,
+    message: null,
   },
   reducers: {
-    getReceiver: (state, action) => {
-      state.Receiver = action.payload;
+    getLatestChat: (state, action) => {
+      state.message = action.payload;
     },
   },
 });
 
-export const { getReceiver } = ReceiverSlice.actions;
+export const { getLatestChat } = ReceiverSlice.actions;
 export default ReceiverSlice.reducer;

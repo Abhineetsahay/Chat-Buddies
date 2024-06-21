@@ -1,11 +1,11 @@
 // controllers/Autho.js
 const User = require("../models/Autho");
+const Contact=require("../models/Contacts");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 require("dotenv").config();
 
 exports.Signup = async (req, res) => {
-  console.log(req.body);
   try {
     const { name, phone, password, image } = req.body;
 
@@ -18,8 +18,6 @@ exports.Signup = async (req, res) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-
-   
 
     const newUser = new User({
       name,
@@ -44,6 +42,11 @@ exports.Signup = async (req, res) => {
 
     newUser.refreshTokens.push(refreshToken);
     await newUser.save();
+    const AddContact=new Contact({
+      name,
+      phone
+    })
+    await AddContact.save();
 
     return res.status(200).json({
       success: true,

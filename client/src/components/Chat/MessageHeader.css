@@ -1,5 +1,5 @@
 .chat-with-friend {
-  width: calc(100% - 300px);
+  width: calc( 100% - 300px);
   background-color: #1c1c1c;
 }
 .chat-header::after {

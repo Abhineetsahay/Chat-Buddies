@@ -14,9 +14,13 @@ const Pop = ({ togglePopup, setFriendDetails }) => {
     }
 
     setLoading(true);
-
+    const token=localStorage.getItem("refreshToken")
     try {
-      const response = await axios.post("http://localhost:4000/searchFriend/search", { friendNumber });
+      const response = await axios.post("http://localhost:4000/searchFriend/search", { friendNumber },{
+        headers:{
+              "Authorization":`Bearer ${token}`
+        }
+      });
       const result = response.data;
       console.log(result);
       const newFriendDetails = {

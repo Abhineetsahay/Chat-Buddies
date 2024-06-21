@@ -1,10 +1,12 @@
 const User = require("../models/Autho");
+const Contact=require("../models/Contacts");
+
 require("dotenv").config();
 
 exports.SearchUser = async (req, res) => {
   try {
     const { friendNumber } = req.body;
-    
+    const {phone}=req.user
     // Validate friendNumber
     if (!friendNumber || typeof friendNumber !== 'string' || friendNumber.trim() === "") {
       return res.status(400).json({
@@ -22,6 +24,7 @@ exports.SearchUser = async (req, res) => {
         message: "User not found"
       });
     }
+    
    const FriendDetails={
           id:Friend._id,
           name:Friend.name,
@@ -29,6 +32,7 @@ exports.SearchUser = async (req, res) => {
           image:Friend.image
    }
     // Respond with the found user
+ await Contact.findOneAndUpdate({phone:phone},{$push:{contacts:FriendDetails}});
     return res.status(200).json({
       success: true,
       message: "User successfully found",
@@ -36,7 +40,7 @@ exports.SearchUser = async (req, res) => {
     });
 
   } catch (error) {
-    console.error("Error searching for user:", error); // Log the error for debugging
+    console.error("Error searching for user:", error.message); // Log the error for debugging
     return res.status(500).json({
       success: false,
       message: "Internal server error",
@@ -45,3 +49,25 @@ exports.SearchUser = async (req, res) => {
   }
 };
  
+
+exports.getfriend=async(req,res)=>{
+
+   try {
+          const {username}=req.user;
+          const {contacts}=await Contact.findOne({name:username});
+          // console.log();
+          return res.status(200).json({
+            success:true,
+            message:"fetched data successfully",
+            contacts
+          })
+
+   } catch (error) {
+
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error: error.message,
+    });
+   }
+}

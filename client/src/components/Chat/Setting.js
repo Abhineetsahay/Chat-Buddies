@@ -17,9 +17,11 @@ const Setting = ({ visible, toggleSidebar }) => {
   const handleImageChange = (event) => {
     if (event.target.files && event.target.files[0]) {
       const reader = new FileReader();
+      console.log(event.target.files[0]);
+      console.log(((event.target.files[0].size)/1024)/1024);
       reader.onload = async(e) => {
         const imageSrc = e.target.result;
-        console.log(e.target);
+        // console.log(e.target);
         setUserPicture(imageSrc);
         localStorage.setItem("selectedImage", imageSrc); // Save to local storage
         updatePicture(imageSrc)

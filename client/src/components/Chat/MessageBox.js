@@ -1,3 +1,4 @@
+import "./MessageBox.css";
 import {
   Stack,
   TextField,
@@ -8,15 +9,17 @@ import {
   IconButton,
 } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
-import AttachFileIcon from "@mui/icons-material/AttachFile";
+import DeleteIcon from "@mui/icons-material/Delete";
+import SentimentSatisfiedAltIcon from "@mui/icons-material/SentimentSatisfiedAlt";
 import { useState, useEffect, useRef } from "react";
-import "./MessageBox.css";
-import { jwtDecode } from "jwt-decode";
+import {jwtDecode} from "jwt-decode";
+import data from '@emoji-mart/data';
+import Picker from '@emoji-mart/react';
 import { io } from "socket.io-client";
 import toast from "react-hot-toast";
 import axios from "axios";
 import Loader from "../utils/Loader";
-import DeleteIcon from "@mui/icons-material/Delete";
+
 const socket = io("http://localhost:4000");
 
 const MessageBox = () => {
@@ -31,6 +34,7 @@ const MessageBox = () => {
   const [isTyping, setIsTyping] = useState(false);
   const [hoveredMessageIndex, setHoveredMessageIndex] = useState(null);
   const messagesEndRef = useRef(null);
+  const [seeEmoji, setSeeEmoji] = useState(false);
   let typingTimeout;
 
   useEffect(() => {
@@ -72,44 +76,15 @@ const MessageBox = () => {
   useEffect(() => {
     const currentFriend = localStorage.getItem("currentFriend");
     const parsedFriend = JSON.parse(currentFriend);
-    localStorage.setItem("receiver", parsedFriend.name);
     if (currentFriend && parsedFriend) {
+      localStorage.setItem("receiver", parsedFriend.name);
+      localStorage.setItem("receiverPhone", parsedFriend.phone);
       setReceiver(parsedFriend.name);
       if (parsedFriend.image) {
         setReceiverImage(parsedFriend.image);
       }
     }
   }, []);
-  const DeleteChat=async(message)=>{
-    try {
-       const DeleteChat=await axios.delete(`http://localhost:4000/DeleteChat/chats/${message._id}`)
-       console.log(DeleteChat.data);
-       toast.success(DeleteChat.data.message)
-    } catch (error) {
-      console.log(error);
-    }
-  }
-  useEffect(() => {
-    const fetchChatHistory = async () => {
-      if (!sender || !receiver) {
-        return;
-      }
-
-      try {
-        const response = await axios.get(
-          `http://localhost:4000/chatHistory/chats`,
-          {
-            params: { sender, receiver },
-          }
-        );
-        setMessages(response.data);
-      } catch (error) {
-        console.error("Error fetching chat history:", error);
-      }
-    };
-
-    fetchChatHistory();
-  }, [sender, receiver,DeleteChat]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -150,6 +125,50 @@ const MessageBox = () => {
   const handleMouseOut = () => {
     setHoveredMessageIndex(null);
   };
+
+  const toggleEmojiPicker = () => {
+    setSeeEmoji(!seeEmoji);
+  };
+
+  const addEmoji = (e) => {
+    const symbol = e.native;
+    setInputValue(inputValue + symbol);
+  };
+
+  const deleteChat = async (message) => {
+    try {
+      const response = await axios.delete(
+        `http://localhost:4000/DeleteChatAccount/chats/${sender}/${receiver}/${message._id}/${message.timestamp}/${message.message}`
+      );
+      toast.success(response.data.message);
+      setMessages(messages.filter((msg) => msg._id !== message._id));
+    } catch (error) {
+      console.error("Error deleting chat:", error);
+    }
+  };
+
+  const fetchChatHistory = async () => {
+    if (!sender || !receiver) {
+      return;
+    }
+
+    try {
+      const response = await axios.get(
+        `http://localhost:4000/chatHistory/chats`,
+        {
+          params: { sender, receiver },
+        }
+      );
+      setMessages(response.data);
+    } catch (error) {
+      console.error("Error fetching chat history:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchChatHistory();
+  }, [sender, receiver,deleteChat]);
+
   return (
     <div className="message-box">
       <Box
@@ -167,19 +186,23 @@ const MessageBox = () => {
               onMouseOver={() => handleMouseOver(index)}
               onMouseOut={handleMouseOut}
             >
-              {(hoveredMessageIndex === index && message.sender===sender) && <DeleteIcon className="DeleteIcon" onClick={()=>DeleteChat(message)}/>}
+              {hoveredMessageIndex === index && message.sender === sender && (
+                <DeleteIcon
+                  className="DeleteIcon"
+                  onClick={() => deleteChat(message)}
+                />
+              )}
               <Avatar
                 src={message.sender === sender ? userImage : receiverImage}
               />
-              <div
-                className="message-content"
-              >
+              <div className="message-content">
                 <Typography variant="body2">{message.message}</Typography>
                 <Typography variant="caption">
                   {new Date(message.timestamp).toLocaleTimeString()}
                 </Typography>
                 <Typography variant="caption"> {message.sender}</Typography>
               </div>
+              {isTyping && <Loader />}
             </div>
           ))
         ) : (
@@ -187,7 +210,6 @@ const MessageBox = () => {
             Start chatting Now
           </Typography>
         )}
-        {isTyping && <Loader />}
         <div ref={messagesEndRef} />
       </Box>
 
@@ -216,10 +238,15 @@ const MessageBox = () => {
             ),
           }}
         />
-        <IconButton>
-          <AttachFileIcon style={{ color: "white" }} />
+        <IconButton className="emoji-part" onClick={toggleEmojiPicker}>
+          <SentimentSatisfiedAltIcon style={{ color: "white" }} />
         </IconButton>
       </Stack>
+      {seeEmoji && (
+        <div className="emoji-picker">
+          <Picker data={data} onEmojiSelect={addEmoji} />
+        </div>
+      )}
     </div>
   );
 };
